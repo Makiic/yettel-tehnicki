@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: yettel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: super
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d yettel"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: yettel
+      DB_USER: postgres
+      DB_PASS: super
+      JWT_SECRET: supersecret
+    ports:
+      - "3000:3000"
+    command: node server.js
+    restart: unless-stopped
+
+volumes:
+  pgdata:
