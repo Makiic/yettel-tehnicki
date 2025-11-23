@@ -6,7 +6,7 @@ const routes = require('./routes');
 const app = express();
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('API alive'));
+app.get('/api', (req, res) => res.send('API alive'));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

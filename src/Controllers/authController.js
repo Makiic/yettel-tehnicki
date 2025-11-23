@@ -3,7 +3,9 @@ const { User } = require('../Model/User');
 
 exports.register = async (req, res) => {
   const user = await User.create(req.body);
-  res.status(201).json(user);
+  const safe = user.toJSON();
+  delete safe.password;
+  return res.status(201).json(safe);
 };
 
 exports.login = async (req, res) => {
